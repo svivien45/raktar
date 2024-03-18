@@ -1,0 +1,11 @@
+﻿name;price;quantity;min_qty;storeName;rowName;columnName;shelfName
+Sofa;599.99;10;3;store1;firstRow;secondColumn;1A
+Dining Table;799.99;1;2;store2;thirdRow;firstColumn;2A
+Armchair;349.99;15;5;store3;fourthRow;fourthColumn;1C
+Bed Frame;499.99;12;4;store1;secondRow;thirdColumn;1B
+Coffee Table;199.99;4;5;store4;secondRow;firstColumn;2C
+Bookshelf;299.99;10;3;store2;thirdRow;secondColumn;2B
+Desk;249.99;18;4;store3;fourthRow;secondColumn;2C
+Wardrobe;699.99;8;2;store3;firstRow;fourthColumn;1A
+Floor Lamp;79.99;25;5;store4;thirdRow;thirdColumn;1B
+Wall Mirror;129.99;2;3;store1;secondRow;fourthColumn;1A

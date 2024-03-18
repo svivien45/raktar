@@ -1,0 +1,21 @@
+table {
+    text-align: center;
+    width: 1200px;
+    height: auto;
+    margin: 0 auto;
+    border-collapse: collapse;
+    border: 2px solid black;
+    margin-top: 50px;
+}
+
+td {
+    height: 50px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.btn {
+    text-align: center;
+}
