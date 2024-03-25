@@ -190,11 +190,18 @@ class Store {
 
     public function insertData()
     {
-        $this->insertStores('stores.csv');
-        $this->insertRows('rows.csv');
-        $this->insertColumns('columns.csv');
-        $this->insertShelves('shelves.csv');
-        $this->insertProducts('products.csv');
+        $query = "SELECT COUNT(*) as count FROM Stores";
+        $result = $this->mysqli->query($query);
+        $row = $result->fetch_assoc();
+        $storeCount = $row['count'];
+
+        if($storeCount == 0) {
+            $this->insertStores('stores.csv');
+            $this->insertRows('rows.csv');
+            $this->insertColumns('columns.csv');
+            $this->insertShelves('shelves.csv');
+            $this->insertProducts('products.csv');
+        }
     }
 }
 
