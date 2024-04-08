@@ -1,23 +1,34 @@
 <?php
 
+echo "<!DOCTYPE html>
+    <html lang='hu'>
+    <head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Oldal</title>
+    <link rel='tylesheet' href='styles.css'>
+</head>
+<body>";
+
 require_once 'database.php';
 require_once 'tools.php';
-
-echo '<link rel="stylesheet" type="text/css" href="style.css">';
 
 $csvFile = 'products.csv';
 $database = new Store();
 
+echo "<div class='header'>";
 echo "<h1>Furniture storage</h1>";
 
 echo "<form method = 'post' action='' class='btn'>
         <button type ='submit' id = 'crt-tbl' name = 'crt-tbl'>Create Tables</button>
         <button type ='submit' id = 'insert' name = 'insert'>Insert Data</button>
-     </form>";
+        <button type='submit' name='checkLowStock'>Out of Stock</button>
+     </form><br>";
+echo "</div><br>";
 
-echo "<form method='post' action=''>
+echo "<form method='post' action='' class='btn1'>
         Enter a name of furniture: <input type='text' name='productName'>
-        <input type='submit' name='sumbit' value='Serach'>
+        <button type='submit' name='sumbit'>Search</button>
     </form>";
 
 echo "<div class='add'>";
@@ -53,9 +64,10 @@ echo "<form method='post' action=''>
             <option value='2B'>2B</option>
             <option value='2C'>2C</option>
         </select><br><br>
-        <button type='submit' name='submit'>Add product</button>
+        <button type='submit' name='submit' class='btn'>Add product</button>
     </form>";
 echo "</div>";
+
 
 if (isset($_POST['submit'])) {
     $name = $_POST['newName'];
@@ -70,7 +82,18 @@ if (isset($_POST['submit'])) {
     $dataWriter = new DataWriter();
     $result = $dataWriter->addProduct($id_store, $id_row, $id_column, $id_shelf, $name, $min_qty, $quantity, $price);
 
-    echo "<p>$result</p>";
+}
+
+if (isset($_POST['checkLowStock'])) {
+    $dataWriter = new DataWriter();
+    $lowStockProducts = $dataWriter->getLowStockProducts();
+
+    if ($lowStockProducts) {
+        echo "<h2>Out of Stock</h2>";
+        foreach ($lowStockProducts as $product) {
+            echo "<p>Name: " . $product['name'] . ", Quantity: " . $product['quantity'] ."</p>";
+        }
+    }
 }
 
 if (isset($_POST['sumbit']) && !empty($_POST['productName'])) {
@@ -87,9 +110,10 @@ if (isset($_POST['insert'])){
     $database->insertData();
 }
 
-
 $dataWriter = new DataWriter();
 $dataWriter->writeTable($csvFile);
 
+echo "</body>";
+echo "</html>";
 
 ?>

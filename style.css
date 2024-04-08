@@ -6,6 +6,8 @@ table {
     border-collapse: collapse;
     border: 2px solid black;
     margin-top: 50px;
+    border-color: rgb(74, 116, 150);
+    background-color: rgb(208, 238, 255);
 }
 
 td {
@@ -14,10 +16,23 @@ td {
 
 h1 {
     text-align: center;
+    color: rgb(74, 116, 150);
 }
 
 .btn {
     text-align: center;
+}
+
+.btn button {
+    background-color: rgb(74, 116, 150);
+    color: white;
+    border-color: rgb(74, 116, 150);
+}
+
+.btn1 button {
+    background-color: rgb(74, 116, 150);
+    color: white;
+    border-color: rgb(74, 116, 150);
 }
 
 .search {
@@ -30,3 +45,9 @@ h1 {
     float:right;
     margin-right: 1000px;
 }
+
+.header {
+    background-color: rgb(208, 238, 255);
+}
+
+

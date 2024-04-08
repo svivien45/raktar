@@ -62,7 +62,6 @@ class DataWriter {
     }
 
     public function searchByName($productName) {
-        $searchResult = '';
         $query = "SELECT * FROM products WHERE name LIKE '%$productName%' ";
         $result = $this->mysqli->query($query);
 
@@ -90,6 +89,8 @@ class DataWriter {
                 echo  "<p> Shelf: " . $shelfName . "</p>";
                 echo "</div>";
             }
+        }else{
+            echo "This item doesn't exist";
         }
     }
 
@@ -122,10 +123,34 @@ class DataWriter {
             $shelfRow = $shelfResult->fetch_assoc();
             $id_shelf = $shelfRow['id'];
         }
+        $existingProductQuery = "SELECT COUNT(*) as count FROM products WHERE name = '$name' AND id_store = (SELECT id FROM stores WHERE name = '$storeName') AND id_row = (SELECT id FROM Trows WHERE name = '$rowName') AND id_column = (SELECT id FROM Columns WHERE name = '$columnName') AND id_shelf = (SELECT id FROM Shelves WHERE name = '$shelfName')";
+        $existingProductResult = $this->mysqli->query($existingProductQuery);
+        $existingProductData = $existingProductResult->fetch_assoc();
+        $existingProductCount = $existingProductData['count'];
 
-        $query = "INSERT INTO products (id_store, id_row, id_column, id_shelf, name, min_qty, quantity, price)
-                  VALUES ($id_store, $id_row, $id_column, $id_shelf, '$name', $min_qty, $quantity, $price)";
-        return $query;
+        if ($existingProductCount > 0) {
+
+            return "A termék már létezik az adatbázisban.";
+        } else {
+            $query = "INSERT INTO products (id_store, id_row, id_column, id_shelf, name, min_qty, quantity, price)
+                      VALUES ($id_store, $id_row, $id_column, $id_shelf, '$name', $min_qty, $quantity, $price)";
+            return $this->mysqli->query($query);
+        }
+    }
+
+    public function getLowStockProducts() {
+        $query = "SELECT * FROM products WHERE quantity < min_qty";
+        $result = $this->mysqli->query($query);
+
+        if ($result->num_rows > 0) {
+            $lowStockProducts = [];
+            while ($row = $result->fetch_assoc()) {
+                $lowStockProducts[] = $row;
+            }
+            return $lowStockProducts;
+        } else {
+            return false;
+        }
     }
 }
 
