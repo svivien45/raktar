@@ -6,7 +6,7 @@ echo "<!DOCTYPE html>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <title>Oldal</title>
-    <link rel='tylesheet' href='styles.css'>
+    <link rel='stylesheet' href='style.css'>
 </head>
 <body>";
 
@@ -19,11 +19,17 @@ $database = new Store();
 echo "<div class='header'>";
 echo "<h1>Furniture storage</h1>";
 
-echo "<form method = 'post' action='' class='btn'>
-        <button type ='submit' id = 'crt-tbl' name = 'crt-tbl'>Create Tables</button>
-        <button type ='submit' id = 'insert' name = 'insert'>Insert Data</button>
+echo "<form method='post' action='' class='btn'>
+        <button type='submit' id='crt-tbl' name='crt-tbl'>Create Tables</button>
+        <button type='submit' id='insert' name='insert'>Insert Data</button>
         <button type='submit' name='checkLowStock'>Out of Stock</button>
      </form><br>";
+
+
+echo "<form method='post' action='pdf.php' class='btn'>
+        <button type='submit' name='generatePDF'>PDF</button>
+    </form><br>";
+
 echo "</div><br>";
 
 echo "<form method='post' action='' class='btn1'>
@@ -64,10 +70,9 @@ echo "<form method='post' action=''>
             <option value='2B'>2B</option>
             <option value='2C'>2C</option>
         </select><br><br>
-        <button type='submit' name='submit' class='btn'>Add product</button>
+        <button type='submit' name='submit' class='addBtn'>Add product</button>
     </form>";
 echo "</div>";
-
 
 if (isset($_POST['submit'])) {
     $name = $_POST['newName'];
@@ -90,9 +95,11 @@ if (isset($_POST['checkLowStock'])) {
 
     if ($lowStockProducts) {
         echo "<h2>Out of Stock</h2>";
+        echo "<div class='outOfStock'>";
         foreach ($lowStockProducts as $product) {
             echo "<p>Name: " . $product['name'] . ", Quantity: " . $product['quantity'] ."</p>";
         }
+        echo "</div>";
     }
 }
 
@@ -109,6 +116,7 @@ if (isset($_POST['crt-tbl'])){
 if (isset($_POST['insert'])){
     $database->insertData();
 }
+
 
 $dataWriter = new DataWriter();
 $dataWriter->writeTable($csvFile);

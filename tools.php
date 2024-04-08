@@ -90,7 +90,7 @@ class DataWriter {
                 echo "</div>";
             }
         }else{
-            echo "This item doesn't exist";
+            echo "This item not in stock";
         }
     }
 

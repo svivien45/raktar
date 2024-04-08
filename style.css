@@ -35,7 +35,19 @@ h1 {
     border-color: rgb(74, 116, 150);
 }
 
+.addBtn {
+    background-color: rgb(74, 116, 150);
+    color: white;
+    border-color: rgb(74, 116, 150);
+}
+
 .search {
+    border: solid 1px black;
+    margin-right: 1600px;
+    padding-left: 10px;
+}
+
+.outOfStock {
     border: solid 1px black;
     margin-right: 1600px;
     padding-left: 10px;
