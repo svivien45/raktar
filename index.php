@@ -12,6 +12,7 @@ echo "<!DOCTYPE html>
 
 require_once 'database.php';
 require_once 'tools.php';
+require 'vendor/autoload.php';
 
 $csvFile = 'products.csv';
 $database = new Store();
@@ -26,8 +27,12 @@ echo "<form method='post' action='' class='btn'>
      </form><br>";
 
 
-echo "<form method='post' action='pdf.php' class='btn'>
+echo "<form method='post' action='download.php' class='btn'>
         <button type='submit' name='generatePDF'>PDF</button>
+    </form><br>";
+
+    echo "<form method='post' action='email.php' class='btn'>
+        <button type='submit' name='email'>Email</button>
     </form><br>";
 
 echo "</div><br>";
