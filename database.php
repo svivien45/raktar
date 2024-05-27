@@ -6,6 +6,7 @@ class Store {
     function __construct($host = 'localhost', $user = 'root', $password = null, $database = 'store') {
         $this->mysqli = mysqli_connect($host, $user, $password, $database);
 
+        $this->mysqli->set_charset("utf8");
         if(!$this->mysqli) {
             die("Connection failed: " . mysqli_connect_error());
         }
@@ -53,6 +54,29 @@ class Store {
             quantity INT,
             price INT)');
     }
+
+    private function createTableUsers()
+    {
+        $this->mysqli->query('CREATE TABLE IF NOT EXISTS Users(
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            is_active TINYINT DEFAULT FALSE,
+            name VARCHAR(50) NOT NULL,
+            email VARCHAR(25) NOT NULL UNIQUE,
+            password VARCHAR(200) not null,
+            token VARCHAR(200),
+            token_valid_until DATETIME,
+            created_at DATETIME DEFAULT NOW(),
+            registered_at DATETIME DEFAULT NOW(),
+            picture VARCHAR(50),
+            deleted_at DATETIME)');
+
+        $this->mysqli->query("CREATE TABLE IF NOT EXISTS user_tokens (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            email VARCHAR(100),
+            token VARCHAR(32),
+            expires_at DATETIME
+        )");
+            }
 
     private function insertStores($csvFile)
     {
@@ -186,6 +210,7 @@ class Store {
         $this->createTableColumns();
         $this->createTableProducts();
         $this->createTableShelves();
+        $this->createTableUsers();
     }
 
     public function insertData()
@@ -203,6 +228,87 @@ class Store {
             $this->insertProducts('products.csv');
         }
     }
+
+    public function setUserActive($userId)
+    {
+        $stmt = $this->mysqli->prepare('UPDATE users SET is_active = 1 WHERE id = ?');
+        $stmt->bind_param('i', $userId);
+        $stmt->execute();
+        $stmt->close();
+    }
+
+    public function getUserByEmail($email)
+    {
+        $stmt = $this->mysqli->prepare('SELECT * FROM users WHERE email = ?');
+        $stmt->bind_param('s', $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
+        $stmt->close();
+        return $user;
+    }
+
+    public function registerUser($name, $email, $password, $token, $token_valid_until)
+    {
+        if ($name != null) {
+
+            $stmt = $this->mysqli->prepare('INSERT INTO Users (name, email, password, token, token_valid_until, registered_at) VALUES (?, ?, ?, ?, ?, NOW())');
+            $stmt->bind_param('sssss', $name, $email, $password, $token, $token_valid_until);
+            $stmt->execute();
+            $stmt->close();
+        }
+    }
+
+    public function getUserById($userId)
+    {
+        $stmt = $this->mysqli->prepare('SELECT * FROM users WHERE id = ?');
+        $stmt->bind_param('i', $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
+        $stmt->close();
+        return $user;
+    }
+
+    public function setUserInactive($userId)
+    {
+        $stmt = $this->mysqli->prepare('UPDATE users SET is_active = 0 WHERE id = ?');
+        $stmt->bind_param('i', $userId);
+        $stmt->execute();
+        $stmt->close();
+    }
+
+    public function storeToken($email, $token, $expires_at) {
+        $stmt = $this->mysqli->prepare("INSERT INTO user_tokens (email, token, expires_at) VALUES (?, ?, ?)");
+        $stmt->bind_param("sss", $email, $token, $expires_at);
+        $stmt->execute();
+        $stmt->close();
+    }
+
+    public function getUserByToken($token) {
+        $stmt = $this->mysqli->prepare("SELECT * FROM users WHERE token = ?");
+        $stmt->bind_param("s", $token);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
+        $stmt->close();
+        return $user;
+    }
+
+    public function activateUser($email) {
+        $stmt = $this->mysqli->prepare("UPDATE users SET is_active = 1 WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $stmt->close();
+    }
+
+    public function deleteToken($token) {
+        $stmt = $this->mysqli->prepare("DELETE FROM user_tokens WHERE token = ?");
+        $stmt->bind_param("s", $token);
+        $stmt->execute();
+        $stmt->close();
+    }
+
 }
 
 ?>

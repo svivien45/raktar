@@ -1,4 +1,22 @@
 <?php
+session_start();
+
+require_once 'database.php';
+require_once 'tools.php';
+require 'vendor/autoload.php';
+
+$csvFile = 'products.csv';
+$database = new Store();
+
+if (isset($_SESSION['user_id'])) {
+    $user = $database->getUserById($_SESSION['user_id']);
+    if ($user && $user['is_active'] == 1) {
+        $username = $user['name'];
+    } else {
+        unset($_SESSION['user_id']);
+        unset($_SESSION['user_name']);
+    }
+}
 
 echo "<!DOCTYPE html>
     <html lang='hu'>
@@ -10,30 +28,39 @@ echo "<!DOCTYPE html>
 </head>
 <body>";
 
-require_once 'database.php';
-require_once 'tools.php';
-require 'vendor/autoload.php';
-
-$csvFile = 'products.csv';
-$database = new Store();
-
 echo "<div class='header'>";
+if (isset($username)) {
+    echo "<h1>Welcome, $username!</h1>";
+}
 echo "<h1>Furniture storage</h1>";
+
+
+
+echo "<form method='post' action='login.php' class='btn'>
+<button type='submit'>Login</button>
+</form>";
+
+echo "<form method='post' action='register.php' class='btn'>
+        <button type='submit'>Register</button>
+    </form>";
 
 echo "<form method='post' action='' class='btn'>
         <button type='submit' id='crt-tbl' name='crt-tbl'>Create Tables</button>
         <button type='submit' id='insert' name='insert'>Insert Data</button>
         <button type='submit' name='checkLowStock'>Out of Stock</button>
-     </form><br>";
-
+     </form>";
 
 echo "<form method='post' action='download.php' class='btn'>
         <button type='submit' name='generatePDF'>PDF</button>
-    </form><br>";
+    </form>";
 
     echo "<form method='post' action='email.php' class='btn'>
         <button type='submit' name='email'>Email</button>
-    </form><br>";
+    </form>";
+
+echo "<form method='post' action='logout.php' class='btn'>
+    <button type='submit'>Logout</button>
+</form><br>";
 
 echo "</div><br>";
 
